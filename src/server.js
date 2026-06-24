@@ -9,6 +9,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+// Evitar que el navegador cachee respuestas del API
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  next();
+});
 app.use(express.static(path.join(__dirname, '../public'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) {
