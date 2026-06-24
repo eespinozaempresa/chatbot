@@ -275,6 +275,7 @@
       color: var(--text);
       font-weight: 500;
       margin-top: 2px;
+      white-space: pre-wrap;
     }
 
     .info-value a {
@@ -471,18 +472,20 @@ function infoCard(curso, campo) {
         <div><div class="info-label">Asistente</div><div class="info-value">${curso.asistente || '—'}</div></div>
       </div>`;
   } else if (campo === 'whatsapp') {
-    const url = curso.whatsapp || '';
+    const val = curso.whatsapp || '';
+    const isUrl = val.startsWith('http');
     rows = `
       <div class="info-row">
         <span class="info-icon">💬</span>
-        <div><div class="info-label">Enlace de grupo</div><div class="info-value">${url ? `<a href="${url}" target="_blank" rel="noopener">Unirse al grupo →</a>` : '—'}</div></div>
+        <div><div class="info-label">Enlace de grupo</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Unirse al grupo →</a>` : (val || '—')}</div></div>
       </div>`;
   } else if (campo === 'meet') {
-    const url = curso.meet || '';
+    const val = curso.meet || '';
+    const isUrl = val.startsWith('http');
     rows = `
       <div class="info-row">
         <span class="info-icon">🎥</span>
-        <div><div class="info-label">Clase virtual</div><div class="info-value">${url ? `<a href="${url}" target="_blank" rel="noopener">Abrir Google Meet →</a>` : '—'}</div></div>
+        <div><div class="info-label">Clase virtual</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Abrir Google Meet →</a>` : (val || '—')}</div></div>
       </div>`;
   } else if (campo === 'requisito') {
     rows = `
