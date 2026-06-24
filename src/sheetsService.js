@@ -96,6 +96,7 @@ async function getCursoById(id) {
     asistente:   row.asistente   || '',
     whatsapp:    row.whatsapp    || row.enlace_whatsapp || '',
     meet:        row.meet        || row.enlace_meet     || '',
+    requisito:   row.requisito   || '',
   };
 }
 

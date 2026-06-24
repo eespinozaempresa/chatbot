@@ -441,10 +441,11 @@ function hideTyping() {
 
 function infoCard(curso, campo) {
   const meta = {
-    turno:    { icon: '📅', tag: 'Horario' },
-    equipo:   { icon: '👥', tag: 'Equipo docente' },
-    whatsapp: { icon: '💬', tag: 'Contacto' },
-    meet:     { icon: '🎥', tag: 'Clase virtual' },
+    turno:     { icon: '📅', tag: 'Horario' },
+    equipo:    { icon: '👥', tag: 'Equipo docente' },
+    whatsapp:  { icon: '💬', tag: 'Contacto' },
+    meet:      { icon: '🎥', tag: 'Clase virtual' },
+    requisito: { icon: '📋', tag: 'Requisito' },
   };
   const m = meta[campo];
 
@@ -482,6 +483,12 @@ function infoCard(curso, campo) {
       <div class="info-row">
         <span class="info-icon">🎥</span>
         <div><div class="info-label">Clase virtual</div><div class="info-value">${url ? `<a href="${url}" target="_blank" rel="noopener">Abrir Google Meet →</a>` : '—'}</div></div>
+      </div>`;
+  } else if (campo === 'requisito') {
+    rows = `
+      <div class="info-row">
+        <span class="info-icon">📋</span>
+        <div><div class="info-label">Requisito</div><div class="info-value">${curso.requisito || 'Sin requisitos previos'}</div></div>
       </div>`;
   }
 
@@ -560,13 +567,14 @@ async function seleccionarCurso(id, nombre) {
       { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
       { label: '💬 WhatsApp',  action: () => mostrarInfo('whatsapp') },
       { label: '🎥 Meet',      action: () => mostrarInfo('meet') },
+      { label: '📋 Requisito', action: () => mostrarInfo('requisito') },
     ],
     300
   );
 }
 
 async function mostrarInfo(campo) {
-  const labels = { turno: '📅 Turno', equipo: '👥 Equipo', whatsapp: '💬 WhatsApp', meet: '🎥 Meet' };
+  const labels = { turno: '📅 Turno', equipo: '👥 Equipo', whatsapp: '💬 WhatsApp', meet: '🎥 Meet', requisito: '📋 Requisito' };
   userMsg(labels[campo]);
   showTyping();
   try {
@@ -579,6 +587,7 @@ async function mostrarInfo(campo) {
         { label: '👥 Equipo',       action: () => mostrarInfo('equipo') },
         { label: '💬 WhatsApp',     action: () => mostrarInfo('whatsapp') },
         { label: '🎥 Meet',         action: () => mostrarInfo('meet') },
+        { label: '📋 Requisito',    action: () => mostrarInfo('requisito') },
         { label: '🔙 Otros cursos', action: () => volverCursos() },
       ], 200);
     }, 600);
