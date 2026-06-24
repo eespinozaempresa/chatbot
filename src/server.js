@@ -54,17 +54,6 @@ app.get('/api/curso/:id', async (req, res) => {
   }
 });
 
-// Debug: ver encabezados raw del Sheet (solo para diagnóstico)
-app.get('/api/debug/headers', async (req, res) => {
-  try {
-    await sheetsService.clearCache();
-    const data = await sheetsService.getAllRaw();
-    res.json({ ok: true, data });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
 // Forzar refresco del caché
 app.post('/api/refresh', async (req, res) => {
   try {
