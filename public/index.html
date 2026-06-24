@@ -365,6 +365,27 @@
 const state = { categoria: null, curso: null };
 const msgEl = document.getElementById('messages');
 
+// Fetch con timeout y retry automático (maneja cold start de Render)
+async function apiFetch(url, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000); // 20s timeout
+    try {
+      const res = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(timer);
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, 2000));
+      } else {
+        throw e;
+      }
+    }
+  }
+}
+
 function scrollBottom() {
   setTimeout(() => { msgEl.scrollTop = msgEl.scrollHeight; }, 40);
 }
@@ -522,9 +543,23 @@ async function start() {
 
 async function loadCategorias() {
   showTyping();
-  try {
-    const { data } = await (await fetch('/api/categorias')).json();
+  // Si tarda más de 4s, avisar que el servidor está despertando
+  const slowTimer = setTimeout(() => {
     hideTyping();
+    showTyping();
+    const warn = document.createElement('div');
+    warn.id = 'slowWarn';
+    warn.className = 'msg-group bot';
+    warn.innerHTML = '<div class="bubble">⏳ Conectando con el servidor, un momento…</div>';
+    msgEl.insertBefore(warn, document.getElementById('typing'));
+    scrollBottom();
+  }, 4000);
+
+  try {
+    const { data } = await apiFetch('/api/categorias');
+    clearTimeout(slowTimer);
+    hideTyping();
+    document.getElementById('slowWarn')?.remove();
     if (!data?.length) {
       await botMsg('No hay categorías disponibles por ahora. Intenta más tarde.');
       return;
@@ -533,9 +568,11 @@ async function loadCategorias() {
       label: cat,
       action: () => seleccionarCategoria(cat),
     })));
-  } catch {
+  } catch (e) {
+    clearTimeout(slowTimer);
     hideTyping();
-    await botMsg('⚠️ No pude conectar con el servidor. Intenta de nuevo.');
+    document.getElementById('slowWarn')?.remove();
+    await botMsg('⚠️ No pude conectar con el servidor. <br><small>Toca <strong>↩ Inicio</strong> para intentar de nuevo.</small>');
   }
 }
 
@@ -544,7 +581,7 @@ async function seleccionarCategoria(cat) {
   state.categoria = cat;
   showTyping();
   try {
-    const { data } = await (await fetch(`/api/cursos/${encodeURIComponent(cat)}`)).json();
+    const { data } = await apiFetch(`/api/cursos/${encodeURIComponent(cat)}`);
     hideTyping();
     if (!data?.length) {
       await botMsg(`No hay cursos registrados en <strong>${cat}</strong> aún.`);
@@ -581,7 +618,7 @@ async function mostrarInfo(campo) {
   userMsg(labels[campo]);
   showTyping();
   try {
-    const { data } = await (await fetch(`/api/curso/${state.curso.id}`)).json();
+    const { data } = await apiFetch(`/api/curso/${state.curso.id}`);
     hideTyping();
     infoCard(data, campo);
     setTimeout(async () => {
