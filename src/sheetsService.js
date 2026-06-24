@@ -38,8 +38,12 @@ async function fetchSheetData() {
 
   if (rows.length < 2) return [];
 
-  // La primera fila son encabezados
-  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/ /g, '_'));
+  // La primera fila son encabezados (elimina acentos y normaliza espacios → _)
+  const headers = rows[0].map(h =>
+    h.trim().toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/ /g, '_')
+  );
   const data = rows.slice(1).map((row, idx) => {
     const obj = { id: String(idx + 1) };
     headers.forEach((h, i) => { obj[h] = (row[i] || '').trim(); });
@@ -105,4 +109,26 @@ async function clearCache() {
   cache.flushAll();
 }
 
-module.exports = { getCategorias, getCursosByCategoria, getCursoById, clearCache };
+// ── Debug: retorna encabezados raw y primera fila ───────────
+async function getAllRaw() {
+  const auth = getAuth();
+  const sheets = google.sheets({ version: 'v4', auth });
+  const range = process.env.SHEET_RANGE || 'Cursos!A:K';
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range,
+  });
+  const rows = response.data.values || [];
+  const rawHeaders = rows[0] || [];
+  const normalizedHeaders = rawHeaders.map(h =>
+    h.trim().toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/ /g, '_')
+  );
+  const sample = rows[1]
+    ? Object.fromEntries(normalizedHeaders.map((h, i) => [h, rows[1][i] || '']))
+    : {};
+  return { rawHeaders, normalizedHeaders, sampleRow: sample, totalRows: rows.length };
+}
+
+module.exports = { getCategorias, getCursosByCategoria, getCursoById, clearCache, getAllRaw };
