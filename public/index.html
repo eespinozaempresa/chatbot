@@ -227,6 +227,7 @@
       animation: fadeUp 0.22s ease both;
       max-width: 82%;
       align-self: flex-start;
+      flex-shrink: 0;
     }
 
     .card-head {
@@ -462,7 +463,6 @@ function hideTyping() {
 }
 
 function infoCard(curso, campo) {
-  console.log('[DBG] infoCard curso.dia:', curso && curso.dia, '| curso.hora:', curso && curso.hora);
   const meta = {
     turno:     { icon: '📅', tag: 'Horario' },
     equipo:    { icon: '👥', tag: 'Equipo docente' },
@@ -517,7 +517,6 @@ function infoCard(curso, campo) {
       </div>`;
   }
 
-  console.log('[DBG] campo:', campo, '| rows vacio?', rows === '', '| m:', m);
   const card = document.createElement('div');
   card.className = 'info-card';
   card.innerHTML = `
@@ -526,9 +525,7 @@ function infoCard(curso, campo) {
       <div class="section-tag">${m.icon} ${m.tag}</div>
     </div>
     <div class="card-body">${rows}</div>`;
-  console.log('[DBG] innerHTML length:', card.innerHTML.length);
   msgEl.appendChild(card);
-  console.log('[DBG] card en DOM, hijos de messages:', msgEl.children.length);
   scrollBottom();
 }
 
@@ -623,7 +620,6 @@ async function mostrarInfo(campo) {
   showTyping();
   try {
     const { data } = await apiFetch(`/api/curso/${state.curso.id}`);
-    console.log('[DBG] data recibida:', JSON.stringify(data));
     hideTyping();
     infoCard(data, campo);
     setTimeout(async () => {
