@@ -462,6 +462,7 @@ function hideTyping() {
 }
 
 function infoCard(curso, campo) {
+  console.log('[DBG] infoCard curso.dia:', curso && curso.dia, '| curso.hora:', curso && curso.hora);
   const meta = {
     turno:     { icon: '📅', tag: 'Horario' },
     equipo:    { icon: '👥', tag: 'Equipo docente' },
@@ -619,6 +620,7 @@ async function mostrarInfo(campo) {
   showTyping();
   try {
     const { data } = await apiFetch(`/api/curso/${state.curso.id}`);
+    console.log('[DBG] data recibida:', JSON.stringify(data));
     hideTyping();
     infoCard(data, campo);
     setTimeout(async () => {
