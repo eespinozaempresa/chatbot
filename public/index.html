@@ -469,6 +469,7 @@ function infoCard(curso, campo) {
     whatsapp:  { icon: '💬', tag: 'Contacto' },
     meet:      { icon: '🎥', tag: 'Clase virtual' },
     requisito: { icon: '📋', tag: 'Requisito' },
+    enlace:    { icon: '🔗', tag: 'Detalle' },
   };
   const m = meta[campo];
 
@@ -524,6 +525,14 @@ function infoCard(curso, campo) {
       <div class="info-row">
         <span class="info-icon">📋</span>
         <div><div class="info-label">Requisito</div><div class="info-value">${curso.requisito || 'Sin requisitos previos'}</div></div>
+      </div>`;
+  } else if (campo === 'enlace') {
+    const val = curso.enlace || '';
+    const href = val.startsWith('http') ? val : `https://${val}`;
+    rows = `
+      <div class="info-row">
+        <span class="info-icon">🔗</span>
+        <div><div class="info-label">Enlace</div><div class="info-value"><a href="${href}" target="_blank" rel="noopener">${val} →</a></div></div>
       </div>`;
   }
 
@@ -675,11 +684,13 @@ async function volverCategorias() {
 
 async function mostrarEnlaceYCategorias(url) {
   userMsg('🔙 Categoría');
-  await botMsg(`🔗 <a href="${url}" target="_blank" rel="noopener">${url}</a>`, null, 200);
+  infoCard({ nombre: state.curso.nombre, enlace: url }, 'enlace');
   state.categoria = null;
   state.curso = null;
-  await botMsg('¿Sobre qué categoría deseas información?', null, 500);
-  await loadCategorias();
+  setTimeout(async () => {
+    await botMsg('¿Sobre qué categoría deseas información?', null, 200);
+    await loadCategorias();
+  }, 600);
 }
 
 function restart() {
