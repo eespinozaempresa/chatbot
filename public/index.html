@@ -493,7 +493,7 @@ function infoCard(curso, campo) {
       ${curso.telefono_tutor ? `
       <div class="info-row">
         <span class="info-icon">📱</span>
-        <div><div class="info-label">Tel. Tutor</div><div class="info-value">${curso.telefono_tutor}</div></div>
+        <div><div class="info-label">Tel. Tutor</div><div class="info-value"><a href="tel:${curso.telefono_tutor}">${curso.telefono_tutor}</a></div></div>
       </div>` : ''}
       <div class="info-row">
         <span class="info-icon">🤝</span>
@@ -502,7 +502,7 @@ function infoCard(curso, campo) {
       ${curso.telefono_monitor ? `
       <div class="info-row">
         <span class="info-icon">📱</span>
-        <div><div class="info-label">Tel. Monitor</div><div class="info-value">${curso.telefono_monitor}</div></div>
+        <div><div class="info-label">Tel. Monitor</div><div class="info-value"><a href="tel:${curso.telefono_monitor}">${curso.telefono_monitor}</a></div></div>
       </div>` : ''}`;
   } else if (campo === 'whatsapp') {
     const val = curso.whatsapp || '';
