@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Asistente de Cursos</title>
+  <title>Asistente de Info de Cursos Virtual</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
@@ -354,7 +354,7 @@
     <div class="avatar">🎓</div>
     <div class="header-info">
       <h1>Asistente de Cursos</h1>
-      <p><span class="status-dot"></span>En línea · Responde al instante <small style="opacity:.5;font-size:.7em">v3</small></p>
+      <p><span class="status-dot"></span>En línea · Hecho por Edwin Espinoza 998594002<small style="opacity:.5;font-size:.7em">v3</small></p>
     </div>
     <button class="restart-btn" onclick="restart()">↩ Inicio</button>
   </div>
@@ -465,11 +465,11 @@ function hideTyping() {
 function infoCard(curso, campo) {
   const meta = {
     turno:     { icon: '📅', tag: 'Horario' },
-    equipo:    { icon: '👥', tag: 'Equipo docente' },
-    whatsapp:  { icon: '💬', tag: 'Contacto' },
+    equipo:    { icon: '👥', tag: 'Tutor/Monitor' },
+    whatsapp:  { icon: '💬', tag: 'Grupo WhatsApp' },
     meet:      { icon: '🎥', tag: 'Clase virtual' },
     requisito: { icon: '📋', tag: 'Requisito' },
-    enlace:    { icon: '🔗', tag: 'Detalle' },
+    enlace:    { icon: '🔗', tag: 'Enlace' },
   };
   const m = meta[campo];
 
@@ -488,21 +488,21 @@ function infoCard(curso, campo) {
     rows = `
       <div class="info-row">
         <span class="info-icon">👤</span>
-        <div><div class="info-label">Profesor</div><div class="info-value">${curso.profesor || '—'}</div></div>
+        <div><div class="info-label">Tutor</div><div class="info-value">${curso.profesor || '—'}</div></div>
       </div>
       ${curso.telefono_tutor ? `
       <div class="info-row">
         <span class="info-icon">📱</span>
-        <div><div class="info-label">Tel. Tutor</div><div class="info-value"><a href="tel:${curso.telefono_tutor}">${curso.telefono_tutor}</a></div></div>
+        <div><div class="info-label">Telefono</div><div class="info-value"><a href="tel:${curso.telefono_tutor}">${curso.telefono_tutor}</a></div></div>
       </div>` : ''}
       <div class="info-row">
         <span class="info-icon">🤝</span>
-        <div><div class="info-label">Asistente</div><div class="info-value">${curso.asistente || '—'}</div></div>
+        <div><div class="info-label">Monitor</div><div class="info-value">${curso.asistente || '—'}</div></div>
       </div>
       ${curso.telefono_monitor ? `
       <div class="info-row">
         <span class="info-icon">📱</span>
-        <div><div class="info-label">Tel. Monitor</div><div class="info-value"><a href="tel:${curso.telefono_monitor}">${curso.telefono_monitor}</a></div></div>
+        <div><div class="info-label">Telefono</div><div class="info-value"><a href="tel:${curso.telefono_monitor}">${curso.telefono_monitor}</a></div></div>
       </div>` : ''}`;
   } else if (campo === 'whatsapp') {
     const val = curso.whatsapp || '';
@@ -510,7 +510,7 @@ function infoCard(curso, campo) {
     rows = `
       <div class="info-row">
         <span class="info-icon">💬</span>
-        <div><div class="info-label">Enlace de grupo</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Unirse al grupo →</a>` : (val || '—')}</div></div>
+        <div><div class="info-label">Enlace de WhatsApp</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Unirse al grupo →</a>` : (val || '—')}</div></div>
       </div>`;
   } else if (campo === 'meet') {
     const val = curso.meet || '';
@@ -518,7 +518,7 @@ function infoCard(curso, campo) {
     rows = `
       <div class="info-row">
         <span class="info-icon">🎥</span>
-        <div><div class="info-label">Clase virtual</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Abrir Google Meet →</a>` : (val || '—')}</div></div>
+        <div><div class="info-label">Clase virtual</div><div class="info-value">${isUrl ? `<a href="${val}" target="_blank" rel="noopener">Abrir Enlace Reunión →</a>` : (val || '—')}</div></div>
       </div>`;
   } else if (campo === 'requisito') {
     rows = `
