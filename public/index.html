@@ -609,8 +609,21 @@ async function seleccionarCategoria(cat) {
       await loadCategorias();
       return;
     }
+    // Flujo tipo A: mostrar infoCard con enlace directamente, sin selección de curso
+    if (data[0].tipo === 'A') {
+      const c = data[0];
+      const url = (c.enlace || '').startsWith('http') ? c.enlace : `https://${c.enlace}`;
+      infoCard({ nombre: c.nombre, enlace: url }, 'enlace');
+      state.categoria = null;
+      setTimeout(async () => {
+        await botMsg('¿Sobre qué categoría deseas información?', null, 200);
+        await loadCategorias();
+      }, 600);
+      return;
+    }
+    // Flujo tipo B: selección de curso normal
     await botMsg(`<strong>${cat}</strong> — Elige un curso:`,
-      data.map(c => ({ label: c.nombre, action: () => seleccionarCurso(c.id, c.nombre, c.tipo, c.enlace) }))
+      data.map(c => ({ label: c.nombre, action: () => seleccionarCurso(c.id, c.nombre) }))
     );
   } catch {
     hideTyping();
@@ -618,30 +631,19 @@ async function seleccionarCategoria(cat) {
   }
 }
 
-async function seleccionarCurso(id, nombre, tipo, enlace) {
+async function seleccionarCurso(id, nombre) {
   userMsg(nombre);
   state.curso = { id, nombre };
-
-  if (tipo === 'A') {
-    const url = (enlace || '').startsWith('http') ? enlace : `https://${enlace}`;
-    await botMsg(`<strong>${nombre}</strong>`,
-      [
-        { label: '🔙 Categoría', action: () => mostrarEnlaceYCategorias(url) },
-      ],
-      300
-    );
-  } else {
-    await botMsg(`<strong>${nombre}</strong><br>¿Qué necesitas saber?`,
-      [
-        { label: '📅 Turno',     action: () => mostrarInfo('turno') },
-        { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
-        { label: '💬 WhatsApp',  action: () => mostrarInfo('whatsapp') },
-        { label: '🎥 Meet',      action: () => mostrarInfo('meet') },
-        { label: '📋 Requisito', action: () => mostrarInfo('requisito') },
-      ],
-      300
-    );
-  }
+  await botMsg(`<strong>${nombre}</strong><br>¿Qué necesitas saber?`,
+    [
+      { label: '📅 Turno',     action: () => mostrarInfo('turno') },
+      { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
+      { label: '💬 WhatsApp',  action: () => mostrarInfo('whatsapp') },
+      { label: '🎥 Meet',      action: () => mostrarInfo('meet') },
+      { label: '📋 Requisito', action: () => mostrarInfo('requisito') },
+    ],
+    300
+  );
 }
 
 async function mostrarInfo(campo) {
@@ -682,16 +684,6 @@ async function volverCategorias() {
   await loadCategorias();
 }
 
-async function mostrarEnlaceYCategorias(url) {
-  userMsg('🔙 Categoría');
-  infoCard({ nombre: state.curso.nombre, enlace: url }, 'enlace');
-  state.categoria = null;
-  state.curso = null;
-  setTimeout(async () => {
-    await botMsg('¿Sobre qué categoría deseas información?', null, 200);
-    await loadCategorias();
-  }, 600);
-}
 
 function restart() {
   msgEl.innerHTML = '';
