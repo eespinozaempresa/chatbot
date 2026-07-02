@@ -617,8 +617,7 @@ async function seleccionarCurso(id, nombre, tipo, enlace) {
     const url = (enlace || '').startsWith('http') ? enlace : `https://${enlace}`;
     await botMsg(`<strong>${nombre}</strong>`,
       [
-        { label: '🔙 Categoría', action: () => volverCategorias() },
-        { label: '🔗 Detalle',   action: () => window.open(url, '_blank') },
+        { label: '🔙 Categoría', action: () => mostrarEnlaceYCategorias(url) },
       ],
       300
     );
@@ -671,6 +670,15 @@ async function volverCategorias() {
   state.categoria = null;
   state.curso = null;
   await botMsg('¿Sobre qué categoría deseas información?', null, 300);
+  await loadCategorias();
+}
+
+async function mostrarEnlaceYCategorias(url) {
+  userMsg('🔙 Categoría');
+  await botMsg(`🔗 <a href="${url}" target="_blank" rel="noopener">${url}</a>`, null, 200);
+  state.categoria = null;
+  state.curso = null;
+  await botMsg('¿Sobre qué categoría deseas información?', null, 500);
   await loadCategorias();
 }
 
