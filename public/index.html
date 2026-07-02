@@ -68,7 +68,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 23px;
       flex-shrink: 0;
     }
 
@@ -76,14 +76,14 @@
 
     .header-info h1 {
       font-family: 'Nunito', sans-serif;
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 800;
       color: #fff;
       letter-spacing: -0.01em;
     }
 
     .header-info p {
-      font-size: 12px;
+      font-size: 13px;
       color: rgba(255,255,255,0.72);
       margin-top: 1px;
     }
@@ -104,7 +104,7 @@
       color: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 6px 13px;
-      font-size: 12.5px;
+      font-size: 13.5px;
       font-family: 'DM Sans', sans-serif;
       font-weight: 500;
       cursor: pointer;
@@ -153,7 +153,7 @@
     /* ── Bubbles ───────────────────────────────────────── */
     .bubble {
       padding: 10px 14px;
-      font-size: 14.5px;
+      font-size: 15.5px;
       line-height: 1.52;
       word-break: break-word;
     }
@@ -192,7 +192,7 @@
       color: var(--accent);
       border-radius: var(--r-sm);
       padding: 9px 10px;
-      font-size: 13.5px;
+      font-size: 14.5px;
       font-family: 'DM Sans', sans-serif;
       font-weight: 600;
       cursor: pointer;
@@ -237,14 +237,14 @@
 
     .card-head .course-name {
       font-family: 'Nunito', sans-serif;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
       color: #fff;
       line-height: 1.3;
     }
 
     .card-head .section-tag {
-      font-size: 11px;
+      font-size: 12px;
       color: rgba(255,255,255,0.78);
       margin-top: 2px;
     }
@@ -261,10 +261,10 @@
 
     .info-row:last-child { border-bottom: none; }
 
-    .info-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+    .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
     .info-label {
-      font-size: 10.5px;
+      font-size: 11.5px;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -272,7 +272,7 @@
     }
 
     .info-value {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text);
       font-weight: 500;
       margin-top: 2px;
@@ -324,7 +324,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 11.5px;
+      font-size: 12.5px;
       color: var(--text-muted);
       padding: 4px 0 10px;
       flex-shrink: 0;
@@ -489,10 +489,20 @@ function infoCard(curso, campo) {
         <span class="info-icon">👤</span>
         <div><div class="info-label">Profesor</div><div class="info-value">${curso.profesor || '—'}</div></div>
       </div>
+      ${curso.telefono_tutor ? `
+      <div class="info-row">
+        <span class="info-icon">📱</span>
+        <div><div class="info-label">Tel. Tutor</div><div class="info-value">${curso.telefono_tutor}</div></div>
+      </div>` : ''}
       <div class="info-row">
         <span class="info-icon">🤝</span>
         <div><div class="info-label">Asistente</div><div class="info-value">${curso.asistente || '—'}</div></div>
-      </div>`;
+      </div>
+      ${curso.telefono_monitor ? `
+      <div class="info-row">
+        <span class="info-icon">📱</span>
+        <div><div class="info-label">Tel. Monitor</div><div class="info-value">${curso.telefono_monitor}</div></div>
+      </div>` : ''}`;
   } else if (campo === 'whatsapp') {
     const val = curso.whatsapp || '';
     const isUrl = val.startsWith('http');
@@ -591,7 +601,7 @@ async function seleccionarCategoria(cat) {
       return;
     }
     await botMsg(`<strong>${cat}</strong> — Elige un curso:`,
-      data.map(c => ({ label: c.nombre, action: () => seleccionarCurso(c.id, c.nombre) }))
+      data.map(c => ({ label: c.nombre, action: () => seleccionarCurso(c.id, c.nombre, c.tipo, c.enlace) }))
     );
   } catch {
     hideTyping();
@@ -599,19 +609,31 @@ async function seleccionarCategoria(cat) {
   }
 }
 
-async function seleccionarCurso(id, nombre) {
+async function seleccionarCurso(id, nombre, tipo, enlace) {
   userMsg(nombre);
   state.curso = { id, nombre };
-  await botMsg(`<strong>${nombre}</strong><br>¿Qué necesitas saber?`,
-    [
-      { label: '📅 Turno',     action: () => mostrarInfo('turno') },
-      { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
-      { label: '💬 WhatsApp',  action: () => mostrarInfo('whatsapp') },
-      { label: '🎥 Meet',      action: () => mostrarInfo('meet') },
-      { label: '📋 Requisito', action: () => mostrarInfo('requisito') },
-    ],
-    300
-  );
+
+  if (tipo === 'A') {
+    const url = (enlace || '').startsWith('http') ? enlace : `https://${enlace}`;
+    await botMsg(`<strong>${nombre}</strong>`,
+      [
+        { label: '🔙 Categoría', action: () => volverCategorias() },
+        { label: '🔗 Detalle',   action: () => window.open(url, '_blank') },
+      ],
+      300
+    );
+  } else {
+    await botMsg(`<strong>${nombre}</strong><br>¿Qué necesitas saber?`,
+      [
+        { label: '📅 Turno',     action: () => mostrarInfo('turno') },
+        { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
+        { label: '💬 WhatsApp',  action: () => mostrarInfo('whatsapp') },
+        { label: '🎥 Meet',      action: () => mostrarInfo('meet') },
+        { label: '📋 Requisito', action: () => mostrarInfo('requisito') },
+      ],
+      300
+    );
+  }
 }
 
 async function mostrarInfo(campo) {
@@ -642,6 +664,14 @@ async function volverCursos() {
   userMsg('🔙 Ver otros cursos');
   await botMsg(`Volviendo a <strong>${state.categoria}</strong>…`);
   await seleccionarCategoria(state.categoria);
+}
+
+async function volverCategorias() {
+  userMsg('🔙 Categoría');
+  state.categoria = null;
+  state.curso = null;
+  await botMsg('¿Sobre qué categoría deseas información?', null, 300);
+  await loadCategorias();
 }
 
 function restart() {

@@ -31,7 +31,7 @@ async function fetchSheetData() {
   const sheets = google.sheets({ version: 'v4', auth });
 
   const spreadsheetId = process.env.SPREADSHEET_ID;
-  const range = process.env.SHEET_RANGE || 'Cursos!A:J'; // ajusta según tu hoja
+  const range = process.env.SHEET_RANGE || 'Cursos!A:N'; // columnas A-N incluye tipo, enlace, telefono_tutor, telefono_monitor
 
   const response = await sheets.spreadsheets.values.get({ spreadsheetId, range });
   const rows = response.data.values || [];
@@ -80,7 +80,12 @@ async function getCursosByCategoria(categoria) {
   const data = await fetchSheetData();
   return data
     .filter(row => normalize(row.categoria) === normalize(categoria))
-    .map(row => ({ id: row.id, nombre: row.curso || row.nombre || 'Sin nombre' }));
+    .map(row => ({
+      id:     row.id,
+      nombre: row.curso || row.nombre || 'Sin nombre',
+      tipo:   row.tipo   || 'B',
+      enlace: row.enlace || '',
+    }));
 }
 
 // ── Obtener detalle completo de un curso ────────────────────
@@ -90,17 +95,21 @@ async function getCursoById(id) {
   if (!row) return null;
 
   return {
-    id: row.id,
-    categoria:   row.categoria   || '',
-    nombre:      row.curso       || row.nombre       || '',
-    dia:         row.dia         || '',
-    hora:        row.hora        || '',
-    turno:       row.turno       || `${row.dia || ''} ${row.hora || ''}`.trim(),
-    profesor:    row.profesor     || '',
-    asistente:   row.asistente   || '',
-    whatsapp:    row.whatsapp    || row.enlace_whatsapp || '',
-    meet:        row.meet        || row.enlace_meet     || '',
-    requisito:   row.requisito   || '',
+    id:               row.id,
+    categoria:        row.categoria        || '',
+    nombre:           row.curso            || row.nombre       || '',
+    dia:              row.dia              || '',
+    hora:             row.hora             || '',
+    turno:            row.turno            || `${row.dia || ''} ${row.hora || ''}`.trim(),
+    profesor:         row.profesor         || '',
+    telefono_tutor:   row.telefono_tutor   || '',
+    asistente:        row.asistente        || '',
+    telefono_monitor: row.telefono_monitor || '',
+    whatsapp:         row.whatsapp         || row.enlace_whatsapp || '',
+    meet:             row.meet             || row.enlace_meet     || '',
+    requisito:        row.requisito        || '',
+    tipo:             row.tipo             || 'B',
+    enlace:           row.enlace           || '',
   };
 }
 

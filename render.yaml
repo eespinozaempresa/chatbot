@@ -8,6 +8,6 @@ services:
       - key: SPREADSHEET_ID
         sync: false
       - key: SHEET_RANGE
-        value: Cursos!A:K
+        value: Cursos!A:N
       - key: GOOGLE_SERVICE_ACCOUNT_JSON
         sync: false
