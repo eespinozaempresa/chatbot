@@ -532,7 +532,7 @@ function infoCard(curso, campo) {
     rows = `
       <div class="info-row">
         <span class="info-icon">🔗</span>
-        <div><div class="info-label">Enlace</div><div class="info-value"><a href="${href}" target="_blank" rel="noopener">${val} →</a></div></div>
+        <div><div class="info-label">Pulse Aquí:</div><div class="info-value"><a href="${href}" target="_blank" rel="noopener">${val} →</a></div></div>
       </div>`;
   }
 
@@ -556,7 +556,7 @@ async function start() {
   div.textContent = 'Hoy';
   msgEl.appendChild(div);
 
-  await botMsg('¡Hola! 👋 Bienvenido al <strong>Asistente Virtual Cursos</strong>.');
+  await botMsg('¡Hola! 👋 Bienvenido al <strong>Asistente Virtual de Información de Cursos</strong>.');
   await botMsg('¿Sobre qué categoría deseas información?', null, 380);
   await loadCategorias();
 }
