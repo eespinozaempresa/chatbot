@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Asistente Virtual de Escuela de Liderazgo</title>
+  <title>Asistente Virtual</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet" />
@@ -353,7 +353,7 @@
   <div class="header">
     <div class="avatar">🎓</div>
     <div class="header-info">
-      <h1>Asistente Virtual de Escuela de Liderazgo</h1>
+      <h1>Asistente Virtual de la Escuela de Liderazgo</h1>
       <p><span class="status-dot"></span>En línea · Hecho por Edwin Espinoza - 998594002<small style="opacity:.5;font-size:.7em">v3</small></p>
     </div>
     <button class="restart-btn" onclick="restart()">↩ Inicio</button>
@@ -634,7 +634,7 @@ async function seleccionarCategoria(cat) {
 async function seleccionarCurso(id, nombre) {
   userMsg(nombre);
   state.curso = { id, nombre };
-  await botMsg(`<strong>${nombre}</strong><br>¿Qué necesitas saber?`,
+  await botMsg(`<strong>${nombre}</strong><br>Pulse un botón para obtener más detalles: 👇🏽`,
     [
       { label: '📅 Turno',     action: () => mostrarInfo('turno') },
       { label: '👥 Equipo',    action: () => mostrarInfo('equipo') },
