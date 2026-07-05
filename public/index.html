@@ -558,7 +558,7 @@ async function start() {
   msgEl.appendChild(div);
 
   await botMsg('¡Hola! 🤖 Bienvenido al <strong>Asistente Virtual de Información de Cursos</strong>.');
-  await botMsg('¿Sobre qué categoría deseas información?', null, 380);
+  //await botMsg('¿Sobre qué categoría deseas información?', null, 380);
   await loadCategorias();
 }
 
@@ -617,7 +617,7 @@ async function seleccionarCategoria(cat) {
       infoCard({ nombre: c.nombre, enlace: url }, 'enlace');
       state.categoria = null;
       setTimeout(async () => {
-        await botMsg('¿Sobre qué categoría deseas información?', null, 200);
+        //await botMsg('¿Sobre qué categoría deseas información?', null, 200);
         await loadCategorias();
       }, 600);
       return;
@@ -681,7 +681,7 @@ async function volverCategorias() {
   userMsg('🔙 Categoría');
   state.categoria = null;
   state.curso = null;
-  await botMsg('¿Sobre qué categoría deseas información?', null, 300);
+  //await botMsg('¿Sobre qué categoría deseas información?', null, 300);
   await loadCategorias();
 }
 
