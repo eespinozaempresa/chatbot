@@ -585,7 +585,7 @@ async function loadCategorias() {
       await botMsg('No hay categorías disponibles por ahora. Intenta más tarde.');
       return;
     }
-    await botMsg('<strong>👇🏽 Elige una botón para más detalle:</strong>', data.map(cat => ({
+    await botMsg('<strong>Elige un botón para más detalle: 👇🏽</strong>', data.map(cat => ({
       label: cat,
       action: () => seleccionarCategoria(cat),
     })));
