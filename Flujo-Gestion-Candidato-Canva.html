@@ -1,0 +1,510 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Diagrama de Flujo – Gestión del Candidato / Selección · Softland HCM</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ══ SLIDE BASE ══ */
+  [data-document-role="page"] {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    color: #1a2340;
+    padding: 22px 32px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    page-break-after: always;
+  }
+
+  /* ── Cabecera de slide ── */
+  .slide-hdr {
+    font-size: 1.1rem; font-weight: 800; color: #fff;
+    padding: 9px 20px; border-radius: 8px;
+    text-align: center; letter-spacing: .3px; flex-shrink: 0;
+  }
+  .c1 { background: #1565c0; }
+  .c2 { background: #283593; }
+  .c3 { background: #6a1b9a; }
+  .c4 { background: #0277bd; }
+  .c5 { background: #00695c; }
+  .c6 { background: #2e7d32; }
+  .c7 { background: #ad1457; }
+
+  /* ── Contenido ── */
+  .content {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 5px; flex: 1;
+    overflow: hidden;
+  }
+  .row {
+    display: flex; justify-content: center;
+    align-items: flex-start; gap: 10px; width: 100%;
+  }
+  .col {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px; flex: 1;
+  }
+
+  /* ── Nodos ── */
+  .node {
+    border-radius: 6px; padding: 5px 12px;
+    font-size: .67rem; font-weight: 600;
+    text-align: center; line-height: 1.35;
+    border: 1.5px solid transparent;
+    width: 100%;
+  }
+  .ns {
+    background: #0a3d7a; color: #fff;
+    border-radius: 22px; border-color: #0a3d7a;
+    font-weight: 800; font-size: .75rem;
+    padding: 7px 24px; width: auto; align-self: center;
+  }
+  .ne {
+    background: #ad1457; color: #fff;
+    border-radius: 22px; border-color: #ad1457;
+    font-weight: 800; font-size: .75rem;
+    padding: 7px 24px; width: auto; align-self: center;
+  }
+  .np { background: #e3f0ff; border-color: #1565c0; color: #0d2f6e; }
+  .na { background: #e8f5e9; border-color: #2e7d32; color: #1b4a1e; }
+  .nal{ background: #fce4ec; border-color: #c62828; color: #7f0000; }
+  .nn {
+    background: #f3e5f5; border-color: #6a1b9a; color: #38006b;
+    font-style: italic; font-weight: 400; font-size: .62rem;
+    border-style: dashed;
+  }
+  .nd {
+    background: #fff8e1; border-color: #f9a825; color: #4a3500;
+    clip-path: polygon(8% 50%,50% 0%,92% 50%,50% 100%);
+    padding: 16px 24px; font-size: .64rem;
+    align-self: center; min-width: 140px;
+  }
+
+  /* ── Flechas ── */
+  .arr { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  .al { width: 2px; height: 12px; background: #7090b0; }
+  .ah { width: 0; height: 0;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 6px solid #7090b0; }
+
+  /* ── Bloque paralelo ── */
+  .par {
+    display: flex; justify-content: center; gap: 8px; width: 100%;
+    border: 1.5px dashed #a0b8d0; border-radius: 7px;
+    padding: 16px 8px 8px; background: #f7faff; position: relative;
+    flex-shrink: 0;
+  }
+  .par-lbl {
+    position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    background: #f7faff; padding: 0 7px;
+    font-size: .57rem; color: #5a6880; font-weight: 700;
+    white-space: nowrap; letter-spacing: .3px;
+  }
+  .pc { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+
+  /* ── Ramales ── */
+  .branch {
+    display: flex; justify-content: center;
+    align-items: flex-start; gap: 12px; width: 100%;
+  }
+  .by,.bn { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .bl {
+    font-size: .58rem; font-weight: 800; border-radius: 3px;
+    padding: 1px 7px; color: #0277bd; background: #e1f5fe;
+  }
+  .bl.no { color: #b71c1c; background: #ffebee; }
+  .bl.ok { color: #1b4a1e; background: #e8f5e9; }
+  .bl.pen{ color: #5a3000; background: #fff3e0; }
+  .bl.ext{ color: #006064; background: #e0f7fa; }
+  .bl.int{ color: #1b4a1e; background: #e8f5e9; }
+  .bl.adm{ color: #b71c1c; background: #ffebee; }
+
+  /* ── Leyenda (portada) ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center; margin-top: 4px;
+  }
+  .li { display: flex; align-items: center; gap: 5px; font-size: .68rem; color: #3a4a60; }
+  .lb { width: 20px; height: 13px; border-radius: 3px; border: 1.5px solid; }
+
+  /* ── Portada ── */
+  .cover-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+  }
+  .cover-title { font-size: 2rem; font-weight: 900; color: #0a3d7a; text-align: center; line-height: 1.2; }
+  .cover-sub   { font-size: 1rem; color: #5a6880; text-align: center; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+  .pill {
+    padding: 6px 16px; border-radius: 22px;
+    font-size: .7rem; font-weight: 700; color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PORTADA
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="Portada">
+  <div class="cover-body">
+    <div class="cover-title">Diagrama de Flujo<br>Gestión del Candidato / Selección</div>
+    <div class="cover-sub">Softland HCM · Módulo de Selección / Reclutamiento</div>
+    <div class="pills">
+      <span class="pill" style="background:#1565c0">① Config. Inicial</span>
+      <span class="pill" style="background:#283593">② Workflow Aprobación</span>
+      <span class="pill" style="background:#6a1b9a">③ Solicitud Selección</span>
+      <span class="pill" style="background:#0277bd">④ Config. Proceso</span>
+      <span class="pill" style="background:#00695c">⑤ Entrada Candidatos</span>
+      <span class="pill" style="background:#2e7d32">⑥ Evaluación Fases</span>
+      <span class="pill" style="background:#ad1457">⑦ Finalización</span>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="lb" style="background:#e3f0ff;border-color:#1565c0"></div>Proceso</div>
+      <div class="li"><div class="lb" style="background:#fff8e1;border-color:#f9a825"></div>Decisión</div>
+      <div class="li"><div class="lb" style="background:#e8f5e9;border-color:#2e7d32"></div>Acción de usuario</div>
+      <div class="li"><div class="lb" style="background:#fce4ec;border-color:#c62828"></div>Restricción / Alerta</div>
+      <div class="li"><div class="lb" style="background:#f3e5f5;border-color:#6a1b9a;border-style:dashed"></div>Nota informativa</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 1 — CONFIGURACIÓN INICIAL
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="① Configuración Inicial">
+  <div class="slide-hdr c1">① Configuración Inicial del Módulo Selección</div>
+  <div class="content">
+    <div class="ns">INICIO</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:360px">Configuración → Configuración Selección</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">PESTAÑAS A CONFIGURAR EN PARALELO</span>
+      <div class="pc"><div class="node na">Tipos de Entrevista<br><em style="font-weight:400;font-size:.6rem">+ preguntas / ítems</em></div></div>
+      <div class="pc">
+        <div class="node na">Tipos de Prueba<br><em style="font-weight:400;font-size:.6rem">+ preguntas / ítems</em></div>
+        <div class="node nn" style="margin-top:3px">Psicométricas: subir formulario externo</div>
+      </div>
+      <div class="pc">
+        <div class="node na">Exámenes<br>(Killer Questions)<br><em style="font-weight:400;font-size:.6rem">Única/Múltiple/Abierta<br>Ponderación = 100%</em></div>
+        <div class="node nn" style="margin-top:3px">Vía Config. E-Learning<br>Módulo "Selección"</div>
+      </div>
+      <div class="pc"><div class="node na">Tipos de Archivo<br><em style="font-weight:400;font-size:.6rem">CV, licencias, etc.</em></div></div>
+      <div class="pc"><div class="node na">Motivos de Cierre</div></div>
+      <div class="pc"><div class="node na">Campos Obligatorios CV</div></div>
+      <div class="pc"><div class="node na">Mensajes Informativos<br><em style="font-weight:400;font-size:.6rem">Portal candidato</em></div></div>
+      <div class="pc"><div class="node na">Etiquetas<br>(Categorías + Etiquetas)</div></div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:400px">Configuración Instancia → Configuración Plataforma</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">OPCIONES DE PLATAFORMA</span>
+      <div class="pc"><div class="node na">Portal Externo<br>Personalizado<br><em style="font-weight:400;font-size:.6rem">Banner, ¿Quiénes somos?,<br>Valores, Beneficios</em></div></div>
+      <div class="pc"><div class="node na">Plantilla Puestos<br>Genéricos<br><em style="font-weight:400;font-size:.6rem">Nombres genéricos<br>en portal externo</em></div></div>
+      <div class="pc"><div class="node na">Restricción por País<br><em style="font-weight:400;font-size:.6rem">Código ISO</em></div></div>
+      <div class="pc"><div class="node na">Logotipo empresa<br>en portal selección</div></div>
+      <div class="pc"><div class="node na">Aviso Legal<br>Eliminación</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 2 — WORKFLOW APROBACIÓN
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="② Workflow de Aprobación">
+  <div class="slide-hdr c2">② Workflow / Flujo de Aprobación de Solicitudes</div>
+  <div class="content">
+    <div class="node np" style="max-width:400px">Configuración → Configuración Solicitudes</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="nd">Tipo de Flujo</div>
+    <div class="arr" style="height:6px"><div class="al" style="height:6px"></div></div>
+    <div class="branch">
+      <div class="by" style="max-width:440px">
+        <div class="bl ok">Individual</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na">Definir:<br>1. Puesto Solicitante<br>2. Puesto Aprobador<br>3. Filtro de Selección (puesto solicitado)</div>
+        <div class="node nn" style="margin-top:4px">El filtro vincula quién puede solicitar ese puesto</div>
+      </div>
+      <div class="bn" style="max-width:440px">
+        <div class="bl">Masivo</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na">Tipo solicitud: Selección<br>→ Jefe Directo o Puesto Específico<br>+ múltiples niveles de aprobación</div>
+      </div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node nn" style="max-width:500px">Si el flujo ya existe para esa rama, el sistema avisa "ya tenían ese filtro creado"</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:400px">Flujo de aprobación configurado<br>→ listo para recibir solicitudes</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 3 — SOLICITUD DE SELECCIÓN
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="③ Solicitud de Selección">
+  <div class="slide-hdr c3">③ Solicitud de Selección</div>
+  <div class="content">
+    <div class="nd">¿Requiere aprobación?</div>
+    <div class="arr" style="height:6px"><div class="al" style="height:6px"></div></div>
+    <div class="branch">
+      <!-- CON APROBACIÓN -->
+      <div class="by" style="flex:1.2">
+        <div class="bl ok">SÍ — vía solicitud</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np">Usuario → Solicitudes → Selección</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.63rem">Organización / Puesto · Tipo contrato<br>Salario base · País · Provincia · Municipio<br>Título · Descripción · Otros → Guardar</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np">Solicitud enviada al Aprobador</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="nd" style="font-size:.62rem;padding:14px 20px">¿Aprobador decide?</div>
+        <div class="arr" style="height:5px"><div class="al" style="height:5px"></div></div>
+        <div class="branch">
+          <div class="by">
+            <div class="bl ok">Aprueba</div>
+            <div class="node na" style="font-size:.62rem">Aparece en "Config. de Procesos"</div>
+          </div>
+          <div class="bn">
+            <div class="bl no">Rechaza</div>
+            <div class="node nal" style="font-size:.62rem">Proceso cancelado</div>
+          </div>
+          <div class="bn">
+            <div class="bl pen">Pendiente</div>
+            <div class="node np" style="font-size:.62rem">Queda en "Solicitudes en Curso"</div>
+          </div>
+        </div>
+      </div>
+      <!-- SIN APROBACIÓN -->
+      <div class="bn" style="flex:0.8">
+        <div class="bl no">NO — acceso directo</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np">Admin: Selección →<br>Configuración Procesos → Pulsar +</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na">Completar mismos campos<br>→ Guardar<br>(aprobado automáticamente)</div>
+      </div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node nn" style="max-width:500px">Si el puesto es nuevo, crearlo primero en Organización → Puestos de Trabajo y Árbol Organizativo</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 4 — CONFIGURACIÓN DEL PROCESO
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="④ Configuración del Proceso">
+  <div class="slide-hdr c4">④ Configuración del Proceso de Selección</div>
+  <div class="content">
+    <div class="node np" style="max-width:420px">Selección → Configuración Procesos → Pulsar ✓ sobre el proceso</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">CONFIGURACIÓN GLOBAL DEL PROCESO</span>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Filtro<br><em style="font-weight:400">País, Titulaciones,<br>Conocimientos, Idiomas</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Examen previo<br>(Killer Question)<br><em style="font-weight:400">Aplica a TODOS al inscribirse</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Seleccionadores<br>Globales<br><em style="font-weight:400">Ven todas las fases</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Email bienvenida<br><em style="font-weight:400">Al candidato al<br>darse de alta</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Alertas<br><em style="font-weight:400">Notificar responsables<br>cuando entra candidato</em></div></div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:360px">Planificar Fases del Proceso → "Nueva Fase"</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">POR CADA FASE (repetir para cada fase necesaria)</span>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Descripción<br>(nombre de fase)</div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Entrevistas<br><em style="font-weight:400">arrastrar o crear</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Pruebas<br><em style="font-weight:400">arrastrar o crear</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Documentos<br><em style="font-weight:400">a solicitar</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Examen de fase<br><em style="font-weight:400">1 por fase,<br>no repetir</em></div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Seleccionadores<br>de la fase<br><em style="font-weight:400">solo ven su fase</em></div></div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">VISIBILIDAD Y PUBLICACIÓN</span>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Visibilidad:<br>Global · Interna<br>Privada · Solo Pública</div></div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">URL amigable<br>(opcional)</div></div>
+      <div class="pc">
+        <div class="node na" style="font-size:.62rem">Publicar Oferta<br>→ "Publicar esta oferta"</div>
+        <div class="node nn" style="margin-top:3px">Sin publicar, los candidatos no pueden inscribirse</div>
+      </div>
+      <div class="pc"><div class="node na" style="font-size:.62rem">Iniciar Proceso<br>de Selección</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 5 — ENTRADA DE CANDIDATOS
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑤ Entrada de Candidatos">
+  <div class="slide-hdr c5">⑤ Entrada de Candidatos</div>
+  <div class="content">
+    <div class="nd">Origen del candidato</div>
+    <div class="arr" style="height:5px"><div class="al" style="height:5px"></div></div>
+    <div class="branch" style="align-items:flex-start">
+      <!-- EXTERNO -->
+      <div class="by" style="flex:1.2">
+        <div class="bl ext">Externo</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np" style="font-size:.62rem">Portal Selección Externo (URL pública)</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.62rem">Crear cuenta (email = usuario)</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.62rem">Completar perfil:<br>Datos Personales · Curriculum<br>(Exp., Titulaciones, Conocimientos,<br>Idiomas, CV…) · Sobre mí</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="nd" style="font-size:.6rem;padding:12px 18px">¿Killer Question activa?</div>
+        <div class="arr" style="height:4px"><div class="al" style="height:4px"></div></div>
+        <div class="branch">
+          <div class="by"><div class="bl ok">SÍ</div><div class="node na" style="font-size:.62rem">Realizar examen previo (1 sola vez)</div></div>
+          <div class="bn"><div class="bl no">NO</div><div class="node np" style="font-size:.62rem">Continúa</div></div>
+        </div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.62rem">Pulsar "Aplicar" → Guardar → Aceptar aviso legal</div>
+      </div>
+      <!-- INTERNO -->
+      <div class="by" style="flex:0.8">
+        <div class="bl int">Interno (empleado)</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np" style="font-size:.62rem">Muro empresa → Selecciones abiertas</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.62rem">Pulsar "Apuntarse" en oferta</div>
+      </div>
+      <!-- ADMIN -->
+      <div class="bn" style="flex:0.9">
+        <div class="bl adm">Admin (manual)</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node np" style="font-size:.62rem">Selección → Candidatos → +</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na" style="font-size:.62rem">Completar ficha candidato<br>(sin contraseña →<br>sin correo externo)</div>
+        <div class="node nal" style="margin-top:3px;font-size:.62rem">Si NIF ya existe → aviso de duplicado</div>
+      </div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:500px">Candidato aparece en lista de Evaluar Candidaturas del proceso</div>
+    <div class="node nn" style="max-width:500px;margin-top:3px">El candidato puede consultar estado en "Mis Candidaturas" (En Proceso / Descartado / Inactiva)</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 6 — EVALUACIÓN (PARTE A)
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑥ Evaluación de Candidaturas (A)">
+  <div class="slide-hdr c6">⑥ Evaluación de Candidaturas — Acciones y Pestañas</div>
+  <div class="content">
+    <div class="node np" style="max-width:440px">Selección → Evaluar Candidaturas → Pulsar lupa en el proceso</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:680px;font-size:.64rem">Vista Candidatos — listado de inscritos<br><em style="font-weight:400">Azul=filtro | Verde=recomendado | Rojo=rechazado | Tachado=descartado | Gris=en proceso</em></div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">ACCIONES MASIVAS SOBRE CANDIDATOS</span>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Dar de alta en 1ª Fase (masivo)</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Descartar masivo</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Filtrar por etiquetas</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Ver examen de acceso</div></div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:380px">Seleccionar candidato a evaluar en su fase</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">PESTAÑAS POR CANDIDATO EN CADA FASE</span>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Entrevistas</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Ver preguntas<br>→ calificar 0-100<br>→ comentar</div>
+      </div>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Pruebas</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Calificar 0-100<br>y comentar</div>
+      </div>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Documentos</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Verificar<br>documentos<br>solicitados</div>
+      </div>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Mensajes</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Enviar email<br>al candidato</div>
+      </div>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Valoración<br>General</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Texto libre<br>de evaluación</div>
+      </div>
+      <div class="pc">
+        <div class="node np" style="background:#dbeeff;border-color:#1565c0;font-size:.63rem">Añadir<br>Etiquetas</div>
+        <div class="node na" style="font-size:.63rem;margin-top:3px">Asignar etiquetas<br>(visibles en<br>todas las fases)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 7 — EVALUACIÓN (PARTE B)
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑥ Evaluación de Candidaturas (B)">
+  <div class="slide-hdr c6">⑥ Evaluación de Candidaturas — Decisión y Finalización de Fase</div>
+  <div class="content">
+    <div class="node na" style="max-width:440px">Pulsar "Calificaciones ↺" → Actualizar → Ingresar Calificación Definitiva</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="nd">Decisión del evaluador</div>
+    <div class="arr" style="height:5px"><div class="al" style="height:5px"></div></div>
+    <div class="branch">
+      <div class="by">
+        <div class="bl ok">Pasa a siguiente fase</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node na">Repetir evaluación en nueva fase</div>
+        <div class="node nn" style="margin-top:3px">Hasta completar todas las fases</div>
+      </div>
+      <div class="bn">
+        <div class="bl no">Descartar</div>
+        <div class="arr"><div class="al"></div><div class="ah"></div></div>
+        <div class="node nal">Candidato descartado<br>(puede reincorporarse con "Incluir")</div>
+      </div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:560px">Pestaña "Finalizar" → candidatos que completaron todas las fases<br><em style="font-weight:400;font-size:.63rem">(ver estrellas / notas por fase)</em></div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">ACCIONES DESDE PESTAÑA FINALIZAR</span>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Ver fases y<br>calificaciones</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Enviar mensaje<br>al candidato</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Editar puesto<br>de empleado</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Alta como empleado<br>(candidato externo →<br>usuario + empleado)</div></div>
+      <div class="pc"><div class="node na" style="font-size:.63rem">Estadística general<br>→ Exportar Excel</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 8 — FINALIZACIÓN
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑦ Finalización del Proceso">
+  <div class="slide-hdr c7">⑦ Finalización del Proceso de Selección</div>
+  <div class="content">
+    <div class="node na" style="max-width:400px">Pulsar "Finalizar Selección"</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node na" style="max-width:500px">Seleccionar Motivo de Cierre + Fecha de Cierre del Proyecto → Aceptar</div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="node np" style="max-width:500px">Proceso pasa a "Procesos Finalizados"<br><em style="font-weight:400;font-size:.63rem">(histórico, sin cambios posibles)</em></div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="par">
+      <span class="par-lbl">RESULTADO FINAL</span>
+      <div class="pc">
+        <div class="node na">Candidato selecto<br>→ "Alta como Empleado"<br>→ activo en plataforma</div>
+        <div class="node nn" style="margin-top:3px">Inicio del ciclo de vida<br>como colaborador</div>
+      </div>
+      <div class="pc">
+        <div class="node np">Selección → Todos<br>Ver todos los procesos<br>y su estado</div>
+      </div>
+      <div class="pc">
+        <div class="node na">Exportar estadísticas<br>finales a Excel<br>por fase</div>
+      </div>
+    </div>
+    <div class="arr"><div class="al"></div><div class="ah"></div></div>
+    <div class="ne">FIN DEL PROCESO DE SELECCIÓN</div>
+  </div>
+</div>
+
+</body>
+</html>
