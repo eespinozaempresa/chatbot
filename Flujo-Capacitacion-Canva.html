@@ -1,0 +1,492 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Diagrama de Flujo – Proceso de Capacitación Softland HCM</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  [data-document-role="page"] {
+    width: 1280px;
+    min-height: 720px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    color: #1a2340;
+    padding: 36px 48px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    page-break-after: always;
+  }
+
+  /* ── TITLE BAR ── */
+  .slide-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-align: center;
+    letter-spacing: .4px;
+    flex-shrink: 0;
+  }
+  .slide-subtitle {
+    text-align: center;
+    font-size: .78rem;
+    color: #5a6880;
+    margin-top: -8px;
+  }
+
+  /* ── PHASE COLORS ── */
+  .c-title  { background: linear-gradient(135deg,#0a3d7a,#1976d2); }
+  .c-config { background: #1565c0; }
+  .c-catalog{ background: #1976d2; }
+  .c-plan   { background: #0277bd; }
+  .c-elearn { background: #00838f; }
+  .c-exec   { background: #2e7d32; }
+  .c-end    { background: #6a1b9a; }
+
+  /* ── CONTENT LAYOUT ── */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  /* ── NODES ── */
+  .node {
+    border-radius: 7px;
+    padding: 8px 16px;
+    font-size: .72rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.4;
+    width: 100%;
+    border: 2px solid transparent;
+  }
+  .n-start, .n-end {
+    background: #0a3d7a; color: #fff;
+    border-radius: 24px; border-color: #0a3d7a;
+    font-weight: 800; font-size: .82rem;
+    padding: 10px 28px; width: auto;
+    align-self: center;
+  }
+  .n-end { background: #6a1b9a; border-color: #6a1b9a; }
+  .n-proc { background: #e3f0ff; border-color: #1565c0; color: #0d2f6e; }
+  .n-act  { background: #e8f5e9; border-color: #2e7d32; color: #1b4a1e; }
+  .n-dec  {
+    background: #fff8e1; border-color: #f9a825; color: #4a3500;
+    clip-path: polygon(8% 50%,50% 0%,92% 50%,50% 100%);
+    padding: 20px 28px; font-size: .68rem;
+    align-self: center;
+  }
+  .n-alert{ background: #fce4ec; border-color: #c62828; color: #7f0000; }
+  .n-note { background: #f3e5f5; border-color: #6a1b9a; color: #38006b;
+    font-style: italic; font-weight: 400; font-size: .67rem;
+    border-style: dashed; }
+
+  /* ── ARROWS ── */
+  .arr {
+    display: flex; flex-direction: column;
+    align-items: center; width: 100%; gap: 0;
+  }
+  .arr-line { width: 2px; height: 14px; background: #7090b0; }
+  .arr-head {
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #7090b0;
+  }
+
+  /* ── PARALLEL BLOCK ── */
+  .par {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    border: 2px dashed #a0b8d0;
+    border-radius: 8px;
+    padding: 14px 10px 10px;
+    background: #f7faff;
+    position: relative;
+  }
+  .par-label {
+    position: absolute; top: -10px; left: 50%;
+    transform: translateX(-50%);
+    background: #f7faff; padding: 0 8px;
+    font-size: .6rem; color: #5a6880;
+    font-weight: 700; white-space: nowrap;
+    letter-spacing: .4px;
+  }
+
+  /* ── BRANCH ── */
+  .branch {
+    display: flex; justify-content: center;
+    align-items: flex-start; gap: 20px; width: 100%;
+  }
+  .b-yes, .b-no {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px; flex: 1;
+  }
+  .bl {
+    font-size: .6rem; font-weight: 800; border-radius: 4px;
+    padding: 2px 8px; color: #0277bd; background: #e1f5fe;
+  }
+  .bl.no { color: #b71c1c; background: #ffebee; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    justify-content: center; margin-top: 8px;
+  }
+  .l-item { display: flex; align-items: center; gap: 6px; font-size: .7rem; color: #3a4a60; }
+  .l-box { width: 22px; height: 14px; border-radius: 3px; border: 2px solid; }
+
+  /* ── TITLE SLIDE ── */
+  .title-slide-body {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px;
+  }
+  .main-title {
+    font-size: 2.4rem; font-weight: 900; color: #0a3d7a;
+    text-align: center; line-height: 1.2;
+  }
+  .main-sub {
+    font-size: 1.1rem; color: #5a6880; text-align: center;
+  }
+  .phase-pills {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    margin-top: 10px;
+  }
+  .pill {
+    padding: 7px 18px; border-radius: 24px;
+    font-size: .75rem; font-weight: 700; color: #fff;
+  }
+
+  /* ── TEAL VARIANT ── */
+  .n-proc-teal {
+    background: #b2dfdb; border: 2px solid #00796b; color: #003d33;
+    border-radius: 7px; padding: 8px 12px;
+    font-size: .68rem; font-weight: 600; text-align: center;
+  }
+  .par-teal {
+    border-color: #80cbc4; background: #e0f2f1;
+  }
+  .par-teal .par-label { background: #e0f2f1; }
+
+  /* ── PURPLE VARIANT ── */
+  .n-proc-purple {
+    background: #ede7f6; border: 2px solid #6a1b9a; color: #38006b;
+    border-radius: 7px; padding: 8px 12px;
+    font-size: .68rem; font-weight: 600; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SLIDE 0 – PORTADA
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="Portada">
+  <div class="title-slide-body">
+    <div class="main-title">Diagrama de Flujo<br>Módulo de Capacitación</div>
+    <div class="main-sub">Softland HCM · Gestión del Talento</div>
+    <div class="phase-pills">
+      <span class="pill" style="background:#1565c0">① Configuración Inicial</span>
+      <span class="pill" style="background:#1976d2">② Catálogos Base</span>
+      <span class="pill" style="background:#0277bd">③ Planes de Formación</span>
+      <span class="pill" style="background:#00838f">④ E-Learning</span>
+      <span class="pill" style="background:#2e7d32">⑤ Ejecución del Curso</span>
+      <span class="pill" style="background:#6a1b9a">⑥ Finalización</span>
+    </div>
+    <div class="legend">
+      <div class="l-item"><div class="l-box" style="background:#e3f0ff;border-color:#1565c0"></div> Proceso</div>
+      <div class="l-item"><div class="l-box" style="background:#fff8e1;border-color:#f9a825"></div> Decisión</div>
+      <div class="l-item"><div class="l-box" style="background:#e8f5e9;border-color:#2e7d32"></div> Acción de usuario</div>
+      <div class="l-item"><div class="l-box" style="background:#fce4ec;border-color:#c62828"></div> Restricción / Alerta</div>
+      <div class="l-item"><div class="l-box" style="background:#f3e5f5;border-color:#6a1b9a;border-style:dashed"></div> Nota informativa</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 1 – CONFIGURACIÓN INICIAL
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="① Configuración Inicial">
+  <div class="slide-title c-config">① Configuración Inicial</div>
+  <div class="content">
+    <div class="n-start">INICIO</div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="node n-proc" style="max-width:380px">Configuración → Configuración Capacitación</div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="par">
+      <span class="par-label">EN PARALELO</span>
+      <div class="col">
+        <div class="node n-act">Crear / Editar Formato de Curso<br><em style="font-weight:400;font-size:.63rem">(Presencial · On-Line)</em></div>
+        <div class="node n-note" style="margin-top:4px">On-Line no se puede eliminar;<br>solo editar nombre</div>
+      </div>
+      <div class="col">
+        <div class="node n-act">Crear / Editar Tipo de Curso<br><em style="font-weight:400;font-size:.63rem">(grupo por temática)</em></div>
+      </div>
+    </div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="node n-note" style="max-width:480px">Estos catálogos son prerrequisitos para crear cursos en los Planes de Formación</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 2 – CATÁLOGOS BASE
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="② Catálogos Base">
+  <div class="slide-title c-catalog">② Catálogos Base (prerrequisitos obligatorios)</div>
+  <div class="content">
+    <div class="par">
+      <span class="par-label">LOS 3 CATÁLOGOS SON OBLIGATORIOS</span>
+
+      <div class="col">
+        <div class="node n-proc">Capacitación → Cursos</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Crear Curso<br>(Nombre*, Tipo*, Descripción*)</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-note">"Curso por Solicitud" ✓ oculta el curso de la biblioteca hasta desmarcar</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-alert">No eliminar si tiene solicitud pendiente</div>
+      </div>
+
+      <div class="col">
+        <div class="node n-proc">Capacitación → Proveedores</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Crear Proveedor<br>(Nombre*, Dirección*, Email*, Descripción*)</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-note">"Puntuación Media" se actualiza automáticamente con valoraciones de colaboradores</div>
+      </div>
+
+      <div class="col">
+        <div class="node n-proc">Capacitación → Presupuestos</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Crear Presupuesto<br>(sin ingresar saldo)</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Añadir Partidas Presupuestarias<br>(asignar cantidad)</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-note">Saldo = Σ partidas − gastos imputados</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 3 – PLANES DE FORMACIÓN
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="③ Planes de Formación">
+  <div class="slide-title c-plan">③ Planes de Formación</div>
+  <div class="content">
+    <div class="row">
+      <div class="col" style="max-width:320px">
+        <div class="node n-proc">Capacitación → Planes de Formación</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Crear Plan (Nombre*, Descripción*) → Guardar</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Pulsar "+ Nuevo Curso"</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-dec">¿Plazas públicas?</div>
+        <div class="branch" style="margin-top:8px">
+          <div class="b-yes">
+            <div class="bl">SÍ</div>
+            <div class="node n-act">Publica en "Mi Empresa"<br>(colaboradores se inscriben)</div>
+          </div>
+          <div class="b-no">
+            <div class="bl no">NO</div>
+            <div class="node n-proc">Inscripción manual por Asignaciones / Inscritos</div>
+          </div>
+        </div>
+      </div>
+      <div class="col" style="max-width:380px">
+        <div class="par">
+          <span class="par-label">DATOS DEL CURSO EN EL PLAN</span>
+          <div class="col">
+            <div class="node n-act">Curso · Formato · Proveedor · Presupuesto</div>
+            <div class="node n-act">Horas laborables / no laborables · Plazas</div>
+            <div class="node n-act">Costes: Proveedor / Asistentes / Recursos / Varios</div>
+            <div class="node n-note">"Coste Imputable" ✓ descuenta del presupuesto</div>
+          </div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="par">
+          <span class="par-label">PESTAÑAS DEL CURSO</span>
+          <div class="col"><div class="node n-proc">Solicitantes</div></div>
+          <div class="col"><div class="node n-proc">Asignaciones</div></div>
+          <div class="col"><div class="node n-proc">Inscritos</div></div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-dec">¿Curso cerrado?</div>
+        <div class="branch" style="margin-top:8px">
+          <div class="b-yes">
+            <div class="bl">SÍ</div>
+            <div class="node n-alert">No se admiten más inscritos</div>
+          </div>
+          <div class="b-no">
+            <div class="bl no">NO</div>
+            <div class="node n-proc">Curso sigue abierto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 4 – E-LEARNING
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="④ E-Learning (Curso On-Line)">
+  <div class="slide-title c-elearn">④ Creación de Curso On-Line (E-Learning)</div>
+  <div class="content">
+    <div class="node n-note" style="max-width:500px">Solo aplica si el Formato del curso es <strong>On-Line</strong></div>
+    <div class="row" style="align-items:flex-start">
+      <div class="col">
+        <div class="node n-proc">Configuración → Configuración E-Learning</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">1. Crear Tipos de Módulos</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">2. Crear Módulos (Nombre, Tipo, Descripción)</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="par par-teal">
+          <span class="par-label">3 PESTAÑAS DEL MÓDULO</span>
+          <div class="col"><div class="n-proc-teal">Detalles</div></div>
+          <div class="col"><div class="n-proc-teal">Materiales<br><em style="font-size:.62rem">texto/slides/video</em></div></div>
+          <div class="col">
+            <div class="n-proc-teal">Exámenes<br><em style="font-size:.62rem">Única/Múltiple/Abierta</em></div>
+            <div class="node n-note" style="margin-top:4px">Activar "Estado" en respuesta correcta</div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="node n-proc">PASO B: Capacitación → Cursos Online</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Seleccionar curso (formato On-Line) → añadir módulos → Guardar</div>
+        <div class="node n-note" style="margin-top:4px">Clic derecho → "Información" o "Configurar Exámenes"</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-proc">PASO C: Configurar Exámenes por Módulo</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="par">
+          <span class="par-label">POR MÓDULO</span>
+          <div class="col">
+            <div class="node n-act">Seleccionar Profesor</div>
+          </div>
+          <div class="col">
+            <div class="node n-act">Nº preguntas · Oportunidades<br>¿Obligatorio aprobar?<br>Tiempo límite · Nota mínima (%)</div>
+          </div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Guardar Cambios → Curso listo para alumnos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 5 – EJECUCIÓN DEL CURSO
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑤ Ejecución del Curso (Alumno)">
+  <div class="slide-title c-exec">⑤ Ejecución del Curso (Vista del Alumno)</div>
+  <div class="content">
+    <div class="row" style="align-items:flex-start">
+      <div class="col">
+        <div class="node n-proc">Alumno: Mis Datos → Mis Cursos Online</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Seleccionar Curso → Pulsar "Módulos"</div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="par">
+          <span class="par-label">PESTAÑAS (ALUMNO)</span>
+          <div class="col"><div class="node n-proc">Detalles</div></div>
+          <div class="col"><div class="node n-proc">Materiales</div></div>
+          <div class="col"><div class="node n-act">Exámenes</div></div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-act">Iniciar Examen → Responder → Finalizar → Confirmar</div>
+      </div>
+      <div class="col">
+        <div class="node n-dec">Tipo de pregunta</div>
+        <div class="branch" style="margin-top:8px">
+          <div class="b-yes">
+            <div class="bl" style="background:#e8f5e9;color:#1b4a1e">Única/Múltiple</div>
+            <div class="node n-act">Corrección automática</div>
+          </div>
+          <div class="b-no">
+            <div class="bl" style="background:#fce4ec;color:#7f0000">Abierta</div>
+            <div class="node n-proc">Capacitación → Corregir Exámenes</div>
+            <div class="node n-act" style="margin-top:4px">Profesor revisa → válida/inválida → Guardar</div>
+          </div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-dec">¿Alumno aprueba?</div>
+        <div class="branch" style="margin-top:8px">
+          <div class="b-yes">
+            <div class="bl">SÍ</div>
+            <div class="node n-act">Ver resultado + comentario → Siguiente módulo</div>
+          </div>
+          <div class="b-no">
+            <div class="bl no">NO</div>
+            <div class="node n-dec" style="font-size:.62rem;padding:16px 20px">¿Quedan intentos?</div>
+            <div class="branch" style="margin-top:6px">
+              <div class="b-yes"><div class="bl">SÍ</div><div class="node n-act">Reintentar</div></div>
+              <div class="b-no"><div class="bl no">NO</div><div class="node n-alert">Sin más oportunidades</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+        <div class="node n-proc">Capacitación → Ver Exámenes (HR: alumnos, calificaciones, comentarios)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SLIDE 6 – FINALIZACIÓN
+══════════════════════════════════════ -->
+<div data-document-role="page" data-label="⑥ Finalización del Curso">
+  <div class="slide-title c-end">⑥ Finalización del Curso</div>
+  <div class="content">
+    <div class="node n-act" style="max-width:480px">Marcar "Curso Terminado" ✓ en el Plan de Formación</div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="node n-proc" style="max-width:380px">Capacitación → Cursos Finalizados</div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="par">
+      <span class="par-label">3 PESTAÑAS EN CURSOS FINALIZADOS</span>
+      <div class="col">
+        <div class="n-proc-purple">Datos del Curso<br><em style="font-weight:400;font-size:.63rem">toda la información</em></div>
+      </div>
+      <div class="col">
+        <div class="n-proc-purple">Alumnos<br><em style="font-weight:400;font-size:.63rem">ausencias · valoración · calificación</em></div>
+      </div>
+      <div class="col">
+        <div class="n-proc-purple">Comentarios de Alumnos<br><em style="font-weight:400;font-size:.63rem">leer feedback</em></div>
+      </div>
+    </div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="node n-act" style="max-width:540px">Alumno: Plan de Mejora → Cursos Finalizados → Valorar curso (icono bocadillo)</div>
+    <div class="node n-note" style="max-width:520px;margin-top:4px">Valoración en blanco = pendiente · Azul = ya valorado. <strong>Una vez guardada, NO se puede editar.</strong></div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="node n-alert" style="max-width:520px">Marcar "Curso Terminado" es obligatorio para que los datos aparezcan en los KPI del Cuadro de Mando</div>
+    <div class="arr"><div class="arr-line"></div><div class="arr-head"></div></div>
+    <div class="n-end">FIN DEL PROCESO</div>
+  </div>
+</div>
+
+</body>
+</html>
