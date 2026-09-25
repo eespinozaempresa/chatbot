@@ -3,3 +3,9 @@ node_modules/
 credentials.json
 *.log
 d.7z
+functions/.env*
+functions/.secret.local
+
+
+
+

@@ -1,81 +1,39 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+// Servidor SOLO para desarrollo local (npm start / npm run dev).
+//
+// src/server.js, al inicio
+require('dotenv').config(); // carga el .env de la raíz (PORT, etc.)
+require('dotenv').config({ path: path.join(__dirname, '../functions/.env') }); // SPREADSHEET_ID, SHEET_RANGE
+//
+// En producción, Firebase Hosting sirve la carpeta "public" y reenvía
+// "/api/**" a la Cloud Function "api" (ver functions/index.js y firebase.json).
+// Aquí se reutiliza ese mismo app de Express para no duplicar las rutas.
 const path = require('path');
-const sheetsService = require('./sheetsService');
+const express = require('express');
 
-const app = express();
+// El SDK de Functions v2 carga automáticamente functions/.env al desplegar;
+// en local hay que cargarlo a mano para que sheetsService.js tenga las
+// variables (SPREADSHEET_ID, GOOGLE_SERVICE_ACCOUNT_JSON, etc.).
+require('dotenv').config({ path: path.join(__dirname, '../functions/.env') });
+
+const { app } = require('../functions');
+
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-
-// Evitar que el navegador cachee respuestas del API
-app.use('/api', (req, res, next) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  next();
-});
 app.use(express.static(path.join(__dirname, '../public'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.html')) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
     }
-  }
+  },
 }));
 
-// ── Rutas API ──────────────────────────────────────────────
-
-// Obtener todas las categorías
-app.get('/api/categorias', async (req, res) => {
-  try {
-    const categorias = await sheetsService.getCategorias();
-    res.json({ ok: true, data: categorias });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'Error al obtener categorías' });
-  }
-});
-
-// Obtener cursos de una categoría
-app.get('/api/cursos/:categoria', async (req, res) => {
-  try {
-    const cursos = await sheetsService.getCursosByCategoria(req.params.categoria);
-    res.json({ ok: true, data: cursos });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'Error al obtener cursos' });
-  }
-});
-
-// Obtener detalle de un curso
-app.get('/api/curso/:id', async (req, res) => {
-  try {
-    const curso = await sheetsService.getCursoById(req.params.id);
-    if (!curso) return res.status(404).json({ ok: false, error: 'Curso no encontrado' });
-    res.json({ ok: true, data: curso });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'Error al obtener el curso' });
-  }
-});
-
-// Forzar refresco del caché
-app.post('/api/refresh', async (req, res) => {
-  try {
-    await sheetsService.clearCache();
-    res.json({ ok: true, message: 'Caché limpiado correctamente' });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: 'Error al limpiar caché' });
-  }
-});
-
-// Fallback → servir el frontend
+// Fallback → servir el frontend (igual que el rewrite "**" de firebase.json)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+  console.log(`✅ Servidor local corriendo en http://localhost:${PORT}`);
+  console.log('   Usa las mismas rutas /api/* que en producción (definidas en functions/index.js)');
 });
