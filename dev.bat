@@ -48,6 +48,7 @@ if not exist "functions\.secret.local" (
 )
 
 echo.
+set FUNCTIONS_DISCOVERY_TIMEOUT=30
 echo [3/3] Iniciando emuladores (Functions + Hosting)...
 echo   Frontend y API: http://localhost:5000
 echo   Panel de control: http://localhost:4000

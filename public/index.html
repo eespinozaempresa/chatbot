@@ -324,6 +324,16 @@
 
     .info-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
+    .info-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
     .info-label {
       font-size: 11.5px;
       font-weight: 600;
@@ -558,9 +568,15 @@ function infoCard(curso, campo) {
         <div><div class="info-label">Hora</div><div class="info-value">${curso.hora || '—'}</div></div>
       </div>`;
   } else if (campo === 'equipo') {
+    const iconoTutor = curso.foto_tutor
+      ? `<img class="info-avatar" src="${curso.foto_tutor}" alt="" onerror="handleAvatarError(this,'👤')">`
+      : `<span class="info-icon">👤</span>`;
+    const iconoMonitor = curso.foto_monitor
+      ? `<img class="info-avatar" src="${curso.foto_monitor}" alt="" onerror="handleAvatarError(this,'🤝')">`
+      : `<span class="info-icon">🤝</span>`;
     rows = `
       <div class="info-row">
-        <span class="info-icon">👤</span>
+        ${iconoTutor}
         <div><div class="info-label">Tutor</div><div class="info-value">${curso.profesor || '—'}</div></div>
       </div>
       ${curso.telefono_tutor ? `
@@ -569,7 +585,7 @@ function infoCard(curso, campo) {
         <div><div class="info-label">Telefono</div><div class="info-value"><a href="tel:${curso.telefono_tutor}">${curso.telefono_tutor}</a></div></div>
       </div>` : ''}
       <div class="info-row">
-        <span class="info-icon">🤝</span>
+        ${iconoMonitor}
         <div><div class="info-label">Monitor</div><div class="info-value">${curso.asistente || '—'}</div></div>
       </div>
       ${curso.telefono_monitor ? `
@@ -622,6 +638,14 @@ function infoCard(curso, campo) {
 }
 
 // ── Flow ────────────────────────────────────────────────────
+
+// Si la URL de la foto falla (link roto, sin permisos, etc.), cae al emoji
+function handleAvatarError(img, emoji) {
+  const span = document.createElement('span');
+  span.className = 'info-icon';
+  span.textContent = emoji;
+  img.replaceWith(span);
+}
 
 async function start() {
   const div = document.createElement('div');
