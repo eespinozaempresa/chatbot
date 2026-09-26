@@ -5,6 +5,7 @@ credentials.json
 d.7z
 functions/.env*
 functions/.secret.local
+functions/credentials.json
 .firebase/*
 
 

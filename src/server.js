@@ -1,9 +1,5 @@
 // Servidor SOLO para desarrollo local (npm start / npm run dev).
 //
-// src/server.js, al inicio
-require('dotenv').config(); // carga el .env de la raíz (PORT, etc.)
-require('dotenv').config({ path: path.join(__dirname, '../functions/.env') }); // SPREADSHEET_ID, SHEET_RANGE
-//
 // En producción, Firebase Hosting sirve la carpeta "public" y reenvía
 // "/api/**" a la Cloud Function "api" (ver functions/index.js y firebase.json).
 // Aquí se reutiliza ese mismo app de Express para no duplicar las rutas.
@@ -29,7 +25,10 @@ app.use(express.static(path.join(__dirname, '../public'), {
 }));
 
 // Fallback → servir el frontend (igual que el rewrite "**" de firebase.json)
-app.get('*', (req, res) => {
+// Se usa app.use() sin ruta (en vez de app.get('*', ...)) porque en Express 5
+// el "*" suelto ya no es una ruta valida (hay que nombrarlo, ej. "/*splat").
+// app.use() sin ruta evita ese problema y funciona igual en Express 4 y 5.
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
