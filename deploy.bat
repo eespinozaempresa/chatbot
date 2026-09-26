@@ -22,6 +22,11 @@ if %errorlevel% neq 0 (
 )
 popd
 
+REM Le da un respiro al antivirus para terminar de escanear los archivos
+REM que "npm install" acaba de tocar, antes de que Firebase intente leerlos.
+echo Esperando unos segundos para que el antivirus termine de escanear...
+timeout /t 8 /nobreak >nul
+
 REM ── 2) Verificacion de sintaxis antes de subir nada ─────────
 echo.
 echo [2/5] Verificando sintaxis de functions\index.js...
@@ -44,6 +49,17 @@ if not exist "functions\.env" (
         echo Deploy cancelado por el usuario.
         exit /b 1
     )
+) else (
+    findstr /I /C:"GOOGLE_SERVICE_ACCOUNT_JSON" functions\.env >nul 2>nul
+    if !errorlevel! equ 0 (
+        echo.
+        echo ERROR: functions\.env tiene GOOGLE_SERVICE_ACCOUNT_JSON.
+        echo Esa variable ya esta en Secret Manager y choca con el secreto si tambien
+        echo esta en .env. Borra esa linea de functions\.env antes de desplegar
+        echo ^(dejala solo cuando uses dev.bat, opcion 2^).
+        pause
+        exit /b 1
+    )
 )
 
 REM ── 4) Deploy: functions primero, luego hosting ─────────────
@@ -51,7 +67,7 @@ REM FUNCTIONS_DISCOVERY_TIMEOUT evita el timeout de 10s en Windows
 REM (antivirus/Defender escaneando node_modules durante el analisis).
 echo.
 echo [4/5] Desplegando functions...
-set FUNCTIONS_DISCOVERY_TIMEOUT=30
+set FUNCTIONS_DISCOVERY_TIMEOUT=90
 call firebase deploy --only functions
 if %errorlevel% neq 0 (
     echo.
